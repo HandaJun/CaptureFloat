@@ -1,0 +1,132 @@
+﻿<Window x:Class="CaptureFloat.VIEW.FloatWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CaptureFloat.VIEW"
+        mc:Ignorable="d"
+        UseLayoutRounding="True"
+        Title="FloatWindow" Height="480" Width="808" Topmost="True" 
+        MinHeight="40" MinWidth="60"
+        WindowStartupLocation="Manual"
+        LocationChanged="Window_LocationChanged"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" 
+        MouseDown="Window_MouseDown" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" KeyDown="Window_KeyDown" AllowDrop="True" Drop="Window_Drop">
+    <Window.CommandBindings>
+        <CommandBinding Command="Copy" Executed="OnCtrlC"/>
+        <CommandBinding Command="Paste" Executed="OnCtrlV"/>
+    </Window.CommandBindings>
+    <Grid>
+        <Border BorderBrush="White" BorderThickness="1" Margin="10" Background="#FF212121" >
+            <Border.Effect>
+                <DropShadowEffect Color="#FF00DCFF" Opacity="1" Direction="316" ShadowDepth="0" BlurRadius="10"/>
+            </Border.Effect>
+            <Grid MouseDown="Window_MouseDoubleClick">
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="クリップボードにコピー" x:Name="ClipboardCopyMi" Click="ClipboardCopyMi_Click" InputGestureText="Ctrl + C"/>
+                        <MenuItem Header="画像を貼り付ける" x:Name="ClipboardPasteMi" Click="ClipboardPasteMi_Click" InputGestureText="Ctrl + V"/>
+                        <MenuItem Header="保存" x:Name="SaveMi" Click="SaveMi_Click" InputGestureText="Ctrl + S"/>
+                        <MenuItem Header="閉じる" x:Name="CloseMi" Click="CloseMi_Click" InputGestureText="Ctrl + W"/>
+                    </ContextMenu>
+                </Grid.ContextMenu>
+                <!--<Image x:Name="MainImg" RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" Margin="0" SnapsToDevicePixels="True"/>
+                <Image x:Name="CanvasImg" RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" Margin="0" SnapsToDevicePixels="True"/>-->
+                <Image x:Name="MainImg" RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" Margin="0" SnapsToDevicePixels="True"/>
+                <Image x:Name="CanvasImg" RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" Margin="0" SnapsToDevicePixels="True"/>
+                <Grid Margin="0">
+                    <InkCanvas x:Name="PenCanvas" Background="{x:Null}" Visibility="Visible" IsEnabled="False">
+                        <InkCanvas.DefaultDrawingAttributes>
+                            <DrawingAttributes Color = "Red" Width = "6" />
+                        </InkCanvas.DefaultDrawingAttributes>
+                    </InkCanvas>
+                </Grid>
+            </Grid>
+        </Border>
+        <Grid Margin="10">
+            <Thumb Opacity="0.01" VerticalAlignment="Bottom" Background="#01000000" Height="6"
+                   DragDelta="OnResizeThumbDragDeltaB" 
+                   DragStarted="OnResizeThumbDragStarted" 
+                   DragCompleted="OnResizeThumbDragCompleted" Margin="0,0,0,-5">
+                <Thumb.Style>
+                    <Style TargetType="{x:Type Thumb}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="SizeNS"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Thumb.Style>
+            </Thumb>
+
+            <Thumb Grid.Row="0" Opacity="0.01" HorizontalAlignment="Right" Background="#01000000" Width="6"
+                    DragDelta="OnResizeThumbDragDeltaR" 
+                    DragStarted="OnResizeThumbDragStarted" 
+                    DragCompleted="OnResizeThumbDragCompleted" Margin="0,0,-5,0">
+                <Thumb.Style>
+                    <Style TargetType="{x:Type Thumb}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="SizeWE"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Thumb.Style>
+            </Thumb>
+
+            <Thumb VerticalAlignment="Bottom"
+                   DragDelta="OnResizeThumbDragDelta" 
+                   DragStarted="OnResizeThumbDragStarted" 
+                   DragCompleted="OnResizeThumbDragCompleted" HorizontalAlignment="Right" Width="15" Height="15" Margin="0,0,-5,-5">
+                <Thumb.Style>
+                    <Style TargetType="{x:Type Thumb}" BasedOn="{x:Null}">
+                        <Style.Setters>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Grid x:Name="resizeVisual" DockPanel.Dock="Right" VerticalAlignment="Bottom" Background="#02FFFFFF" Height="10" Width="10">
+                                            <!--<Line X1="6" Y1="18" X2="18" Y2="6" Stroke="#FF787878" StrokeThickness="1.5"/>
+                                            <Line X1="10" Y1="18" X2="18" Y2="10" Stroke="#FF787878" StrokeThickness="1.5"/>
+                                            <Line X1="14" Y1="18" X2="18" Y2="14" Stroke="#FF787878" StrokeThickness="1.5"/>-->
+                                            <Grid.Style>
+                                                <Style TargetType="{x:Type Grid}">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Cursor" Value="SizeNWSE"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style.Setters>
+                    </Style>
+                </Thumb.Style>
+            </Thumb>
+        </Grid>
+
+        <Border x:Name="PinBt" Height="25" VerticalAlignment="Top" Background="#FF232323" 
+                BorderBrush="White" BorderThickness="1" CornerRadius="13" Visibility="Visible" MouseDown="PinBt_MouseDown"
+                Cursor="Hand" Margin="0,0,0,0" HorizontalAlignment="Left" Width="25" ToolTip="最前面に出す">
+            <Image x:Name="PinImg" Source="/IMG/pin.png" Margin="4"/>
+        </Border>
+
+        <Border x:Name="PenBt" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="#FF232323" 
+                BorderBrush="White" BorderThickness="1" CornerRadius="13" Visibility="Visible" MouseDown="PenBt_MouseDown"
+                Cursor="Hand" Margin="0,0,29,0" ToolTip="落書き">
+            <TextBlock x:Name="PenTb" Text="✒" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" FontWeight="Bold" Foreground="White" Margin="2" FontFamily="Verdana"/>
+        </Border>
+        <!--<Border x:Name="SaveBt" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="#FF232323" 
+                BorderBrush="White" BorderThickness="1" CornerRadius="13" Visibility="Visible" MouseDown="SaveBt_MouseDown"
+                Cursor="Hand" Margin="0,0,29,0">
+            <Image Source="/IMG/saveIcon.png" Margin="4"/>
+        </Border>-->
+        <Border x:Name="CloseBt" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Background="#FF232323" 
+                BorderBrush="White" BorderThickness="1" CornerRadius="13" Visibility="Visible" MouseDown="CloseBt_MouseDown"
+                Cursor="Hand" ToolTip="閉じる">
+            <TextBlock Text="X" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Foreground="White" Margin="6,2,6,3" FontFamily="Verdana"/>
+        </Border>
+    </Grid>
+</Window>
