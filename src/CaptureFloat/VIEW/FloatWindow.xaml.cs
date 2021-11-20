@@ -1,22 +1,16 @@
-﻿using System;
+﻿using CaptureFloat.LOGIC;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using CaptureFloat.LOGIC;
-using Microsoft.Win32;
 
 namespace CaptureFloat.VIEW
 {
@@ -150,7 +144,6 @@ namespace CaptureFloat.VIEW
             CloseBt.Visibility = Visibility.Visible;
             PenBt.Visibility = Visibility.Visible;
             PinBt.Visibility = Visibility.Visible;
-            //SaveBt.Visibility = Visibility.Visible;
         }
 
         private void Window_MouseLeave(object sender, MouseEventArgs e)
@@ -158,7 +151,6 @@ namespace CaptureFloat.VIEW
             CloseBt.Visibility = Visibility.Hidden;
             PenBt.Visibility = Visibility.Hidden;
             PinBt.Visibility = Visibility.Hidden;
-            //SaveBt.Visibility = Visibility.Hidden;
         }
 
         private void CloseBt_MouseDown(object sender, MouseButtonEventArgs e)
@@ -182,14 +174,6 @@ namespace CaptureFloat.VIEW
 
         private void OnResizeThumbDragDelta(object sender, DragDeltaEventArgs e)
         {
-            //if(e.VerticalChange != 0)
-            //{
-            //    //OnResizeHeight(e);
-            //}
-            //else if(e.HorizontalChange != 0)
-            //{
-            //    OnResizeWidth(e);
-            //}
             OnResizeWidth(e);
         }
 
@@ -208,10 +192,6 @@ namespace CaptureFloat.VIEW
             {
                 double yAdjust = this.Height + e.VerticalChange;
                 yAdjust = (this.ActualHeight + yAdjust) > this.MinHeight ? yAdjust : this.MinHeight;
-                //if (yAdjust > this.MaxHeight)
-                //{
-                //    yAdjust = this.MaxHeight;
-                //}
                 this.Height = yAdjust;
                 this.Width = ((yAdjust - 22) * ratio) + 22;
             }
@@ -226,10 +206,6 @@ namespace CaptureFloat.VIEW
             {
                 double xAdjust = this.Width + e.HorizontalChange;
                 xAdjust = (this.ActualWidth + xAdjust) > this.MinWidth ? xAdjust : this.MinWidth;
-                //if (xAdjust > this.MaxWidth)
-                //{
-                //    xAdjust = this.MaxWidth;
-                //}
                 this.Width = xAdjust;
                 this.Height = ((xAdjust - 22) / ratio) + 22;
             }
@@ -301,19 +277,17 @@ namespace CaptureFloat.VIEW
         [MethodImpl(MethodImplOptions.Synchronized)]
         public string SaveImage(BitmapSource bit)
         {
-            string tempPath = "";
+            string tempPath;
             try
             {
                 if (!Directory.Exists("Temp"))
                 {
                     Directory.CreateDirectory("Temp");
                 }
-                //tempPath = @"Temp\" + Guid.NewGuid().ToString() + ".jpg";
                 tempPath = @"Temp\" + Guid.NewGuid().ToString() + ".png";
 
                 using (var fileStream = new FileStream(tempPath, FileMode.Create))
                 {
-                    //BitmapEncoder encoder = new JpegBitmapEncoder();
                     BitmapEncoder encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create(bit));
                     encoder.Save(fileStream);
@@ -330,7 +304,7 @@ namespace CaptureFloat.VIEW
         [MethodImpl(MethodImplOptions.Synchronized)]
         public BitmapSource GetImage(string path)
         {
-            BitmapImage bmp = null;
+            BitmapImage bmp;
             try
             {
                 if (!Directory.Exists("Temp"))
@@ -375,10 +349,6 @@ namespace CaptureFloat.VIEW
                 PenCanvas.Strokes.Clear();
                 PenTb.Text = "✒";
             }
-            //CanvasImg.Visibility = PenMode ? Visibility.Hidden : Visibility.Visible;
-            //PenCanvas.Visibility = PenMode ? Visibility.Visible : Visibility.Collapsed;
-            //PenCanvas.Width = CanvasImg.Width;
-            //PenCanvas.Height = CanvasImg.Height;
         }
 
         public BitmapImage GetCanvasImage(InkCanvas surface)
@@ -406,14 +376,6 @@ namespace CaptureFloat.VIEW
                    PixelFormats.Pbgra32);
                 RenderOptions.SetBitmapScalingMode(renderBitmap, BitmapScalingMode.NearestNeighbor);
                 renderBitmap.Render(surface);
-
-
-                //using (FileStream fs = File.Open(path, FileMode.Create))
-                //{
-                //    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                //    encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-                //    encoder.Save(fs);
-                //}
 
                 var bitmapImage = ToBitmapSource(renderBitmap);
                 surface.Margin = new Thickness(x1, x2, x3, x4);
@@ -473,7 +435,7 @@ namespace CaptureFloat.VIEW
             }
         }
 
-        object lockObj = new object();
+        readonly object lockObj = new object();
         private void Window_LocationChanged(object sender, EventArgs e)
         {
             lock (lockObj)
@@ -483,33 +445,33 @@ namespace CaptureFloat.VIEW
                 {
                     if (tempScale == 1 && scale == 1.5)
                     {
-                        Width = Width * (2d / 3d);
-                        Height = Height * (2d / 3d);
+                        Width *= (2d / 3d);
+                        Height *= (2d / 3d);
                     }
                     else if (tempScale == 1.5 && scale == 1)
                     {
-                        Width = Width * (3d / 2d);
-                        Height = Height * (3d / 2d);
+                        Width *= (3d / 2d);
+                        Height *= (3d / 2d);
                     }
                     else if (tempScale == 1 && scale == 1.25)
                     {
-                        Width = Width * (4d / 5d);
-                        Height = Height * (4d / 5d);
+                        Width *= (4d / 5d);
+                        Height *= (4d / 5d);
                     }
                     else if (tempScale == 1.25 && scale == 1)
                     {
-                        Width = Width * (5d / 4d);
-                        Height = Height * (5d / 4d);
+                        Width *= (5d / 4d);
+                        Height *= (5d / 4d);
                     }
                     else if (tempScale == 1.25 && scale == 1.5)
                     {
-                        Width = Width * (4d / 5d);
-                        Height = Height * (4d / 5d);
+                        Width *= (4d / 5d);
+                        Height *= (4d / 5d);
                     }
                     else if (tempScale == 1.5 && scale == 1.25)
                     {
-                        Width = Width * (5d / 4d);
-                        Height = Height * (5d / 4d);
+                        Width *= (5d / 4d);
+                        Height *= (5d / 4d);
                     }
 
                     tempScale = scale;
@@ -534,12 +496,12 @@ namespace CaptureFloat.VIEW
 
         public void Save()
         {
-            var dialog = new SaveFileDialog();
-            dialog.Filter = "PNGファイル (*.png)|*.png";
-            //dialog.Filter = "PNGファイル (*.png)|*.png|JPGファイル (*.jpg)|*.jpg|すべて (*.*)|*.*";
-            //dialog.InitialDirectory = Common.ImgFolder;
-            dialog.DefaultExt = "*.png";
-            dialog.FileName = Title + ".png";
+            var dialog = new SaveFileDialog
+            {
+                Filter = "PNGファイル (*.png)|*.png",
+                DefaultExt = "*.png",
+                FileName = Title + ".png"
+            };
             // ダイアログを表示する
             if (dialog.ShowDialog() == true)
             {
@@ -592,9 +554,7 @@ namespace CaptureFloat.VIEW
                     NewOpen(tempPath);
                     e.Handled = true;
                 }
-                catch (Exception ex)
-                {
-                }
+                catch { }
             }
         }
 

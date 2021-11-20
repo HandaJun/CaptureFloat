@@ -25,9 +25,6 @@ using Rectangle = System.Drawing.Rectangle;
 
 namespace CaptureFloat.VIEW
 {
-    /// <summary>
-    /// Interaction logic for CaptureHoldWindow.xaml
-    /// </summary>
     public partial class CaptureHoldWindow : Window
     {
         double RectTop = 0;
@@ -39,16 +36,13 @@ namespace CaptureFloat.VIEW
         bool IsRect = false;
 
         readonly int ZoomRectSize = 200;
-
-        ScreenCapturer sc = new ScreenCapturer();
+        readonly ScreenCapturer sc = new ScreenCapturer();
         Bitmap bitmap = null;
-        ScreenManager screenManager = null;
+        readonly ScreenManager screenManager = null;
         Rect rect = new Rect();
         public double ScreenScale = 0;
         public double Magnification = 1;
 
-        readonly int POSITION_WIDTH;
-        readonly int POSITION_HALF_WIDTH;
         public int NowMoveKey = 0;
 
         public CaptureHoldWindow(ScreenManager sm)
@@ -73,11 +67,8 @@ namespace CaptureFloat.VIEW
                 Magnification = (2d / 3d);
             }
 
-            //Width = rect.Width;
-            //Height = rect.Height;
             Width = rect.Width * Magnification;
             Height = rect.Height * Magnification;
-            //WindowState = WindowState.Maximized;
 
             SetCapture();
             SelectedRect.Visibility = Visibility.Collapsed;
@@ -144,13 +135,11 @@ namespace CaptureFloat.VIEW
 
         private void DashRePaint()
         {
-            //VerticalRect.Margin = new Thickness(MouseX - 0.5, 0, rect.Width * Magnification - MouseX - 0.5, 0);
-            //HorizontalRect.Margin = new Thickness(0, MouseY - 0.5, 0, rect.Height * Magnification - MouseY - 0.5);
             VerticalRect.Margin = new Thickness(MouseX, 0, rect.Width * Magnification - MouseX - 1, 0);
             HorizontalRect.Margin = new Thickness(0, MouseY, 0, rect.Height * Magnification - MouseY - 1);
         }
 
-        private void overGd_MouseDown(object sender, MouseButtonEventArgs e)
+        private void OverGd_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var mousePos = e.GetPosition(overGd);
             RectTop = mousePos.Y;
@@ -161,7 +150,7 @@ namespace CaptureFloat.VIEW
             RePaint();
         }
 
-        private void overGd_MouseUp(object sender, MouseButtonEventArgs e)
+        private void OverGd_MouseUp(object sender, MouseButtonEventArgs e)
         {
             IsRect = false;
             var mousePos = e.GetPosition(overGd);
@@ -198,22 +187,8 @@ namespace CaptureFloat.VIEW
             if (RectWidth != 0 && RectHeight != 0)
             {
                 Rect rect = new Rect(left, top, RectWidth, RectHeight);
-                //Rectangle rect = new Rectangle((int)left - 6, (int)top - 6, (int)RectWidth - 2, (int)RectHeight - 2);
                 var crop = CropAtRect(bitmap, rect);
                 crop.Save(Common.ImgFolder + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png");
-
-                //rect.X += screenManager.DeviceBounds.X * Magnification;
-                //rect.Y += screenManager.DeviceBounds.Y * Magnification;
-
-                //double otherScreenScale = 1;
-                //foreach (var hold in MainWindow.holdWindows)
-                //{
-                //    if(hold != this)
-                //    {
-                //        otherScreenScale = ScreenManager.GetScale(this);
-                //        break;
-                //    }
-                //}
 
                 if (App.Setting.IsOnlyClipboard)
                 {
@@ -238,10 +213,9 @@ namespace CaptureFloat.VIEW
             }
             Common.IsCapture = false;
             Common.SetAllWindowState(WindowState.Normal, "FloatWindow", "MainWindow");
-            //MainWindow.GetInstance().Visibility = Visibility.Visible;
         }
 
-        private void overGd_MouseMove(object sender, MouseEventArgs e)
+        private void OverGd_MouseMove(object sender, MouseEventArgs e)
         {
             if (NowMoveKey > 10000)
             {
@@ -280,21 +254,10 @@ namespace CaptureFloat.VIEW
                     Left = (int)bounds.Left,
                     Bottom = (int)bounds.Bottom,
                     Right = (int)bounds.Right,
-                    //Top = (int)(bounds.Top * Magnification),
-                    //Left = (int)(bounds.Left * Magnification),
-                    //Bottom = (int)(bounds.Bottom * Magnification),
-                    //Right = (int)(bounds.Right * Magnification),
                 };
                 bitmap = sc.Capture(rect, enmScreenCaptureMode.Screen);
-                //bitmap = ResizeImage(bitmap, (int)(bitmap.Width * Magnification), (int)(bitmap.Height * Magnification));
                 BitmapImage bi = BitmapToImage(bitmap);
-                //RenderTargetBitmap bmp = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, 96, 96, PixelFormats.Pbgra32);
-                //bmp.Render(bi);
-
                 BackgroundImg.Source = bi;
-                //BackgroundImg.RenderSize = new System.Windows.Size(bitmap.Width * Magnification, bitmap.Height * Magnification);
-                //BackgroundImg.Width = bitmap.Width * Magnification;
-                //BackgroundImg.Height = bitmap.Height * Magnification;
             }
         }
 
@@ -314,8 +277,6 @@ namespace CaptureFloat.VIEW
                 RenderOptions.SetBitmapScalingMode(bitmapImage, BitmapScalingMode.NearestNeighbor);
                 bitmapImage.StreamSource = memory;
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                //bitmapImage.DecodePixelHeight = (int)(bitmap.Height * Magnification);
-                //bitmapImage.DecodePixelWidth = (int)(bitmap.Width * Magnification);
                 bitmapImage.EndInit();
                 return bitmapImage;
             }
@@ -362,7 +323,7 @@ namespace CaptureFloat.VIEW
             }
         }
 
-        private void overGd_MouseEnter(object sender, MouseEventArgs e)
+        private void OverGd_MouseEnter(object sender, MouseEventArgs e)
         {
             VerticalRect.Visibility = Visibility.Visible;
             HorizontalRect.Visibility = Visibility.Visible;
@@ -370,7 +331,7 @@ namespace CaptureFloat.VIEW
             ZoomBd.Visibility = Visibility.Visible;
         }
 
-        private void overGd_MouseLeave(object sender, MouseEventArgs e)
+        private void OverGd_MouseLeave(object sender, MouseEventArgs e)
         {
             VerticalRect.Visibility = Visibility.Collapsed;
             HorizontalRect.Visibility = Visibility.Collapsed;
@@ -418,25 +379,11 @@ namespace CaptureFloat.VIEW
                 Left = (int)mousePos.X - 20 + (int)rect.Left,
                 Bottom = (int)mousePos.Y + 20 + (int)rect.Top,
                 Right = (int)mousePos.X + 20 + (int)rect.Left,
-                //Top = (int)(bounds.Top * Magnification),
-                //Left = (int)(bounds.Left * Magnification),
-                //Bottom = (int)(bounds.Bottom * Magnification),
-                //Right = (int)(bounds.Right * Magnification),
             };
-
-
-            //DllRect captureRect = new DllRect()
-            //{
-            //    Top = (int)mousePos.Y - 20 + (int)rect.Top,
-            //    Left = (int)mousePos.X - 20 + (int)rect.Left,
-            //    Bottom = (int)mousePos.Y + 20 + (int)rect.Top,
-            //    Right = (int)mousePos.X + 20 + (int)rect.Left,
-            //};
 
             if (true)
             {
                 var crop = sc.Capture(captureRect, enmScreenCaptureMode.Screen);
-                //var crop = ScreenCapturer.Capture(ScreenCaptureModeEnum.Rect, r: captureRect);
                 if (NowMoveKey != key) return;
                 SetZoomBd(crop);
             }
@@ -445,7 +392,6 @@ namespace CaptureFloat.VIEW
             {
                 Thread.Sleep(50);
                 var crop = sc.Capture(captureRect, enmScreenCaptureMode.Screen);
-                //var crop = ScreenCapturer.Capture(ScreenCaptureModeEnum.Rect, r: captureRect);
                 if (NowMoveKey != key) return;
                 ZoomBd.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {

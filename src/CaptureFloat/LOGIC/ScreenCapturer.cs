@@ -50,7 +50,6 @@ namespace CaptureFloat.LOGIC
 
                 if (screenCaptureMode == enmScreenCaptureMode.Screen)
                 {
-                    //bounds = Screen.GetBounds(Point.Empty);
                     bounds = new Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
                     CursorPosition = Cursor.Position;
                 }
@@ -59,7 +58,6 @@ namespace CaptureFloat.LOGIC
                     Process process = null;
                     process = Process.GetCurrentProcess();
                     var foregroundWindowsHandle = process.MainWindowHandle;
-                    //var rect = new Rect();
                     GetWindowRect(foregroundWindowsHandle, ref rect);
                     bounds = new Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
                     CursorPosition = new Point(Cursor.Position.X - rect.Left, Cursor.Position.Y - rect.Top);
@@ -69,14 +67,13 @@ namespace CaptureFloat.LOGIC
 
                 try
                 {
-
                     using (var g = Graphics.FromImage(result))
                     {
                         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                         g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Log.Exception(ex);
                     return null;
@@ -84,7 +81,7 @@ namespace CaptureFloat.LOGIC
 
                 return result;
             }
-            catch (Exception ex2)
+            catch (Exception)
             {
                 //Log.Exception(ex2);
                 return null;

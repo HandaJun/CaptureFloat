@@ -33,7 +33,6 @@ namespace CaptureFloat.LOGIC
         public const UInt32 WM_VSCROLL = 0x0115;
         //public const int WM_MOUSEWHEEL = 0x020A;
 
-
         [StructLayout(LayoutKind.Sequential)]
         public struct Win32Point2
         {
@@ -44,10 +43,6 @@ namespace CaptureFloat.LOGIC
         /// <summary>
         /// 指定された文字列をウィンドウのタイトルとクラス名に含んでいるプロセスを閉じる
         /// </summary>
-        /// <param name="windowText">ウィンドウのタイトルに含むべき文字列。
-        /// nullを指定すると、classNameだけで検索する。</param>
-        /// <param name="className">ウィンドウが属するクラス名に含むべき文字列。
-        /// nullを指定すると、windowTextだけで検索する。</param>
         public static void KillProcessesByWindow(string windowText, string className)
         {
             try
@@ -56,7 +51,6 @@ namespace CaptureFloat.LOGIC
 
                 foreach (var item in ps)
                 {
-                    //Log.Info("●" + item.ProcessName + " - Kill");
                     item.Kill();
                 }
 
@@ -65,21 +59,13 @@ namespace CaptureFloat.LOGIC
                     Thread.Sleep(1000);
                 }
             }
-            catch (Exception ex)
-            {
-                //Log.Exception(ex);
-            }
+            catch { }
         }
 
         /// <summary>
         /// 指定された文字列をウィンドウのタイトルとクラス名に含んでいるプロセスを
         /// すべて取得する。
         /// </summary>
-        /// <param name="windowText">ウィンドウのタイトルに含むべき文字列。
-        /// nullを指定すると、classNameだけで検索する。</param>
-        /// <param name="className">ウィンドウが属するクラス名に含むべき文字列。
-        /// nullを指定すると、windowTextだけで検索する。</param>
-        /// <returns>見つかったプロセスの配列。</returns>
         public static Process[] GetProcessesByWindow(
             string windowText, string className)
         {
@@ -92,15 +78,11 @@ namespace CaptureFloat.LOGIC
             Process[] processList = null;
             try
             {
-                //ウィンドウを列挙して、対象のプロセスを探す
                 EnumWindows(new EnumWindowsDelegate(EnumWindowCallBack), IntPtr.Zero);
-
-                //プロセス取得
                 processList = (Process[])foundProcesses.ToArray(typeof(Process));
             }
-            catch (Exception ex)
+            catch
             {
-                //Log.Exception(ex);
             }
 
             //結果を返す
@@ -138,49 +120,36 @@ namespace CaptureFloat.LOGIC
         {
             if (searchWindowText != null)
             {
-                //ウィンドウのタイトルの長さを取得する
                 int textLen = GetWindowTextLength(hWnd);
                 if (textLen == 0)
                 {
-                    //次のウィンドウを検索
                     return true;
                 }
-                //ウィンドウのタイトルを取得する
                 StringBuilder tsb = new StringBuilder(textLen + 1);
                 GetWindowText(hWnd, tsb, tsb.Capacity);
-                //タイトルに指定された文字列を含むか
                 if (tsb.ToString().IndexOf(searchWindowText) < 0)
                 {
-                    //含んでいない時は、次のウィンドウを検索
                     return true;
                 }
             }
 
             if (searchClassName != null)
             {
-                //ウィンドウのクラス名を取得する
                 StringBuilder csb = new StringBuilder(256);
                 GetClassName(hWnd, csb, csb.Capacity);
-                //クラス名に指定された文字列を含むか
                 if (csb.ToString().IndexOf(searchClassName) < 0)
                 {
-                    //含んでいない時は、次のウィンドウを検索
                     return true;
                 }
             }
 
-            //プロセスのIDを取得する
-            int processId;
-            GetWindowThreadProcessId(hWnd, out processId);
-            //今まで見つかったプロセスでは無いことを確認する
+            GetWindowThreadProcessId(hWnd, out int processId);
             if (!foundProcessIds.Contains(processId))
             {
                 foundProcessIds.Add(processId);
-                //プロセスIDをからProcessオブジェクトを作成する
                 foundProcesses.Add(Process.GetProcessById(processId));
             }
 
-            //次のウィンドウを検索
             return true;
         }
 
@@ -226,10 +195,7 @@ namespace CaptureFloat.LOGIC
                 var parentId = new PerformanceCounter("Process", "Creating Process ID", indexedProcessName);
                 proc = Process.GetProcessById((int)parentId.NextValue());
             }
-            catch (Exception ex)
-            {
-                //Log.Exception(ex);
-            }
+            catch { }
             return proc;
         }
 
@@ -270,32 +236,14 @@ namespace CaptureFloat.LOGIC
 
             IntPtr dummy = IntPtr.Zero;
             IntPtr timeout = IntPtr.Zero;
-
-            bool isSuccess = false;
-
-            int processId;
-            // フォアグラウンドウィンドウを作成したスレッドのIDを取得
-            int foregroundID = GetWindowThreadProcessId(GetForegroundWindow(), out processId);
-            // 目的のウィンドウを作成したスレッドのIDを取得
-            int targetID = GetWindowThreadProcessId(handle, out processId);
-
-            // スレッドのインプット状態を結び付ける
+            int foregroundID = GetWindowThreadProcessId(GetForegroundWindow(), out _);
+            int targetID = GetWindowThreadProcessId(handle, out _);
             AttachThreadInput(targetID, foregroundID, true);
-
-            // 現在の設定を timeout に保存
             SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, timeout, 0);
-            // ウィンドウの切り替え時間を 0ms にする
             SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, dummy, SPIF_SENDCHANGE);
-
-            // ウィンドウをフォアグラウンドに持ってくる
-            isSuccess = SetForegroundWindow(handle);
-
-            // 設定を元に戻す
+            bool isSuccess = SetForegroundWindow(handle);
             SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, timeout, SPIF_SENDCHANGE);
-
-            // スレッドのインプット状態を切り離す
             AttachThreadInput(targetID, foregroundID, false);
-
             return isSuccess;
         }
 
@@ -317,7 +265,6 @@ namespace CaptureFloat.LOGIC
             {
                 ShowWindow(handle, SW_RESTORE);
             }
-            //ShowWindowAsync(new HandleRef(null, handle), SW_RESTORE);
             SetForegroundWindow(handle);
         }
 
@@ -327,7 +274,6 @@ namespace CaptureFloat.LOGIC
             {
                 ShowWindow(handle, SW_RESTORE);
             }
-            //ShowWindowAsync(new HandleRef(null, handle), SW_RESTORE);
             SetForegroundWindow(handle);
         }
 
@@ -434,10 +380,6 @@ namespace CaptureFloat.LOGIC
         [DllImport("user32.dll")]
         public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
-        //[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        //static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-
-
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public struct POINT
         {
@@ -481,41 +423,6 @@ namespace CaptureFloat.LOGIC
         [DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
         public static extern bool SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
-
-
-        private static Process GetParentProcess()
-        {
-            int iParentPid = 0;
-            int iCurrentPid = Process.GetCurrentProcess().Id;
-
-            IntPtr oHnd = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-
-            if (oHnd == IntPtr.Zero)
-                return null;
-
-            PROCESSENTRY32 oProcInfo = new PROCESSENTRY32();
-
-            oProcInfo.dwSize =
-            (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(PROCESSENTRY32));
-
-            if (Process32First(oHnd, ref oProcInfo) == false)
-                return null;
-
-            do
-            {
-                if (iCurrentPid == oProcInfo.th32ProcessID)
-                    iParentPid = (int)oProcInfo.th32ParentProcessID;
-            }
-            while (iParentPid == 0 && Process32Next(oHnd, ref oProcInfo));
-
-            if (iParentPid > 0)
-                return Process.GetProcessById(iParentPid);
-            else
-                return null;
-        }
-
-        static uint TH32CS_SNAPPROCESS = 2;
-
         [StructLayout(LayoutKind.Sequential)]
         public struct PROCESSENTRY32
         {
@@ -549,7 +456,7 @@ namespace CaptureFloat.LOGIC
             DESKTOPVERTRES = 117,
         }
 
-        public static float getScalingFactor()
+        public static float GetScalingFactor()
         {
             System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(IntPtr.Zero);
             IntPtr desktop = g.GetHdc();
@@ -582,30 +489,6 @@ namespace CaptureFloat.LOGIC
             public IntPtr hwndCaret;
             public System.Drawing.Rectangle rcCaret;
         }
-
-        //public static void ScrollWindow(ScrollEnum move)
-        //{
-        //    //SendMessage(hwnd, WM_VSCROLL, (delta * scrolls) << 16, ref p);
-        //    //SendMessage(hwnd, WM_MOUSEWHEEL, (delta * scrolls) << 16, ref p);
-
-        //    GUITHREADINFO threadInfo = new GUITHREADINFO();
-        //    threadInfo.cbSize = Marshal.SizeOf(threadInfo);
-        //    GetGUIThreadInfo(0, ref threadInfo);
-        //    System.Drawing.Rectangle rect = new System.Drawing.Rectangle();
-        //    GetWindowRect(threadInfo.hwndFocus, out rect);
-        //    Point p = new Point(rect.Width / 2, rect.Height / 2);
-        //    //SendMessage(threadInfo.hwndFocus, WM_VSCROLL, (int)move, ref p);
-        //    SendMessage(threadInfo.hwndFocus, WM_VSCROLL, (int)move, 0);
-        //}
-
-        //public static void ScrollWindow2()
-        //{
-        //    GUITHREADINFO threadInfo = new GUITHREADINFO();
-        //    threadInfo.cbSize = Marshal.SizeOf(threadInfo);
-        //    GetGUIThreadInfo(0, ref threadInfo);
-        //    SendMessage(threadInfo.hwndFocus, WM_VSCROLL, SB_LINEDOWN, 0);
-        //    //SendMessage(hwnd, WM_MOUSEWHEEL, (delta * scrolls) << 16, ref p);
-        //}
 
     }
 }

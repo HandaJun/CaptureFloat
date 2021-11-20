@@ -27,7 +27,6 @@ namespace CaptureFloat
             //mouseHookListener.MouseMove += MouseHookListenerOnMouseMove;
             //mouseHookListener.MouseDoubleClick += MouseHookListenerOnMouseDoubleClick;
             //mouseHookListener.MouseWheel += MouseHookListenerOnMouseWheel;
-
             //Log.Info("MouseHook 開始");
         }
 

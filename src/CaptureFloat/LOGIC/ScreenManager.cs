@@ -32,12 +32,8 @@ namespace CaptureFloat.LOGIC
 
         public static ScreenManager GetScreenFrom(System.Drawing.Point point)
         {
-            //int x = (int)Math.Round(point.X);
-            //int y = (int)Math.Round(point.Y);
             int x = point.X;
             int y = point.Y;
-
-            // are x,y device-independent-pixels ??
             System.Drawing.Point drawingPoint = new System.Drawing.Point(x, y);
             Screen screen = System.Windows.Forms.Screen.FromPoint(drawingPoint);
             ScreenManager screenManager = new ScreenManager(screen);
@@ -75,7 +71,6 @@ namespace CaptureFloat.LOGIC
 
         private Rect GetRect(Rectangle value)
         {
-            // should x, y, width, height be device-independent-pixels ??
             return new Rect
             {
                 X = value.X,
@@ -101,31 +96,7 @@ namespace CaptureFloat.LOGIC
             {
                 return 1;
             }
-
-            //PresentationSource source = PresentationSource.FromVisual(w);
-            //double dpiX = 1;
-            //double dpiY = 1;
-            //if (source != null)
-            //{
-            //    dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;
-            //    dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;
-            //}
-
-            //DEVMODE dm = new DEVMODE();
-            //dm.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
-
-            //EnumDisplaySettings(ToLPTStr(screen.DeviceName), ENUM_CURRENT_SETTINGS, ref dm);
-
-            //Console.WriteLine($"Device: {screen.DeviceName}");
-            //Console.WriteLine($"dmSize: {dm.dmSize}");
-            //Console.WriteLine($"Real Resolution: {dm.dmPelsWidth}x{dm.dmPelsHeight}");
-            //Console.WriteLine($"Virtual Resolution: {screen.Bounds.Width}x{screen.Bounds.Height}");
-            //Console.WriteLine($"BitsPerPixel: {screen.BitsPerPixel}");
-
-            //Console.WriteLine($"getScalingFactor: {getScalingFactor()}");
             var dpi = VisualTreeHelper.GetDpi(w).PixelsPerDip;
-            //Console.WriteLine($"GetDpi {dpi}");
-            //Console.WriteLine();
             return dpi;
         }
 
@@ -163,9 +134,6 @@ namespace CaptureFloat.LOGIC
 
 
         const int ENUM_CURRENT_SETTINGS = -1;
-
-        //[DllImport("user32.dll")]
-        //public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
 
         [DllImport("User32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]

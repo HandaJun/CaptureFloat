@@ -58,7 +58,6 @@ namespace CaptureFloat.LOGIC
         IntPtr _hookHandle = IntPtr.Zero;
         HookProc _hookFunction = null;
 
-        // hook method called by system
         private delegate int HookProc(int code, IntPtr wParam, ref KBDLLHOOKSTRUCT lParam);
 
         public delegate void HookEventHandler(object sender, HookEventArgs e);

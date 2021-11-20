@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using CaptureFloat.VIEW;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,10 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using System.Collections;
-using Shell32;
-using System.IO;
-using CaptureFloat.VIEW;
 
 namespace CaptureFloat.LOGIC
 {
@@ -162,9 +157,8 @@ namespace CaptureFloat.LOGIC
                     dis.Invoke(DispatcherPriority.Normal, act);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //Debug.WriteLine(ex.Message);
                 if (exceptionThrowFlg)
                 {
                     throw;
@@ -172,121 +166,20 @@ namespace CaptureFloat.LOGIC
             }
         }
 
-        public static void OpenPath(bool repeatFlg = false)
+        public static void OpenPath()
         {
             try
             {
                 string path = Clipboard.GetText().Trim();
-                Process proc = new Process();
-                proc.StartInfo = new ProcessStartInfo(path);
+                Process proc = new Process
+                {
+                    StartInfo = new ProcessStartInfo(path)
+                };
                 proc.Start();
             }
             catch (Exception)
             {
             }
-
-
-            //try
-            //{
-            //    Invoke(() => {
-            //        System.Windows.Forms.SendKeys.SendWait("^(c)");
-            //        System.Windows.Forms.SendKeys.Flush();
-            //        Task.Run(() => {
-            //            Thread.Sleep(1000);
-            //            Invoke(() => {
-            //                string path = Clipboard.GetText();
-            //                try
-            //                {
-            //                    Process.Start(path);
-            //                }
-            //                catch (Exception)
-            //                {
-            //                    Task.Run(() =>
-            //                    {
-            //                        Thread.Sleep(1000);
-            //                        OpenPath(true);
-            //                    });
-            //                    return;
-            //                }
-
-            //                //Debug.WriteLine("path : " + path);
-            //                //if (string.IsNullOrEmpty(path) && !repeatFlg)
-            //                //{
-            //                //    Task.Run(() => {
-            //                //        Thread.Sleep(1000);
-            //                //        OpenPath(true);
-            //                //    });
-            //                //    return;
-            //                //}
-            //                //if (!string.IsNullOrEmpty(path))
-            //                //{
-            //                //    try
-            //                //    {
-            //                //        FileAttributes attr = File.GetAttributes(path);
-            //                //        if (attr.HasFlag(FileAttributes.Directory))
-            //                //        {
-            //                //            if (Directory.Exists(path))
-            //                //            {
-            //                //                Process.Start(path);
-            //                //            }
-            //                //            else
-            //                //            {
-            //                //                if (!repeatFlg)
-            //                //                {
-            //                //                    Task.Run(() => {
-            //                //                        Thread.Sleep(1000);
-            //                //                        OpenPath(true);
-            //                //                    });
-            //                //                }
-            //                //            }
-            //                //        }
-            //                //        else
-            //                //        {
-            //                //            if (File.Exists(path))
-            //                //            {
-            //                //                Process.Start(path);
-            //                //            }
-            //                //            else
-            //                //            {
-            //                //                if (!repeatFlg)
-            //                //                {
-            //                //                    Task.Run(() => {
-            //                //                        Thread.Sleep(1000);
-            //                //                        OpenPath(true);
-            //                //                    });
-            //                //                }
-            //                //            }
-            //                //        }
-            //                //    }
-            //                //    catch (Exception ex)
-            //                //    {
-            //                //        if (!repeatFlg)
-            //                //        {
-            //                //            Task.Run(() => {
-            //                //                Thread.Sleep(1000);
-            //                //                OpenPath(true);
-            //                //            });
-            //                //        }
-            //                //        else
-            //                //        {
-            //                //            try
-            //                //            {
-            //                //                Process.Start(path);
-            //                //            }
-            //                //            catch (Exception)
-            //                //            {
-            //                //            }
-            //                //        }
-            //                //    }
-            //                //}
-            //            });
-            //        });
-            //    });
-            //}
-            //catch (Exception)
-            //{
-            //}
-
         }
 
         [DllImport("user32.dll")]
@@ -325,15 +218,6 @@ namespace CaptureFloat.LOGIC
                             string selectedFileFullName = selected[0];
                             string selectedFileName = Path.GetFileName(selectedFileFullName);
                             string dir = Path.GetDirectoryName(selectedFileFullName);
-                            //FileAttributes attr = File.GetAttributes(selectedFileFullName);
-                            //if (attr.HasFlag(FileAttributes.Directory))
-                            //{
-                            //    dir = selectedFileFullName;
-                            //}
-                            //else
-                            //{
-                            //    dir = Path.GetDirectoryName(selectedFileFullName);
-                            //}
 
                             string commentFile = Path.Combine(dir, ".FileComment");
                             if (File.Exists(commentFile))

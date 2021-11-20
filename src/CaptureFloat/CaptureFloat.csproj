@@ -104,7 +104,6 @@
     <Compile Include="LOGIC\ProcessUtil.cs" />
     <Compile Include="LOGIC\ScreenCapturer.cs" />
     <Compile Include="LOGIC\ScreenManager.cs" />
-    <Compile Include="ScreenCapture.cs" />
     <Compile Include="VIEW\CommentWindow.xaml.cs">
       <DependentUpon>CommentWindow.xaml</DependentUpon>
     </Compile>

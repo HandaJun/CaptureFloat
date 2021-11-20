@@ -30,14 +30,13 @@ namespace CaptureFloat
     public partial class MainWindow : Window
     {
         public static MainWindow _instance = new MainWindow();
-        //public static KeyHook _keyHook;
         private KeyboardHookListener keyboardHookListener;
-        private static KeyboardHookManager khm = new KeyboardHookManager();
+        private static readonly KeyboardHookManager khm = new KeyboardHookManager();
+        private static readonly MouseHookManager mhm = new MouseHookManager();
+
         public static double ScreenScale = 0;
         public static Rect ScreenRect = new Rect();
         public static double Magnification = 1;
-
-        private static MouseHookManager mhm = new MouseHookManager();
 
         private MainWindow()
         {
@@ -52,15 +51,15 @@ namespace CaptureFloat
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //_keyHook = new KeyHook();
-            keyboardHookListener = new KeyboardHookListener(new GlobalHooker());
-            keyboardHookListener.Enabled = true;
+            keyboardHookListener = new KeyboardHookListener(new GlobalHooker())
+            {
+                Enabled = true
+            };
             keyboardHookListener.KeyDown += khm.KeyboardHookListenerOnKeyDown;
             keyboardHookListener.KeyUp += khm.KeyboardHookListenerOnKeyUp;
 
             mhm.Start();
 
-            //string thisVer = Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, 3);
             VersionMi_2.Header = $"CaptureFloat {Common.GetVersion("v", 6)}";
 
             ScreenRect = ScreenManager.GetScreenFrom(this).DeviceBounds;
@@ -73,18 +72,6 @@ namespace CaptureFloat
             {
                 MainWindow.Magnification = (2d / 3d);
             }
-            //ScreenScale = ScreenManager.GetScreenFrom(this).GetScale();
-
-            //if (ScreenScale == 120)
-            //{
-            //    ScreenRect.Height *= (4d / 5d);
-            //    ScreenRect.Width *= (4d / 5d);
-            //}
-            //else if (ScreenScale == 144)
-            //{
-            //    ScreenRect.Height *= (2d / 3d);
-            //    ScreenRect.Width *= (2d / 3d);
-            //}
 
             if (App.Setting.IsOnlyClipboard)
             {
@@ -111,11 +98,15 @@ namespace CaptureFloat
 
         public void CaptureBt_Click(object sender, RoutedEventArgs e)
         {
-            //CaptureStart();
-            GetCapture2();
+            var screenImages = GetScreenImages();
+            CaptureStart(screenImages);
         }
 
-        public void GetCapture2()
+        /// <summary>
+        /// 画面のイメージ取得
+        /// </summary>
+        /// <returns></returns>
+        public System.Drawing.Bitmap[] GetScreenImages()
         {
             ScreenCapturer sc = new ScreenCapturer();
             Common.SetAllWindowState(WindowState.Minimized, null, "CaptureHoldWindow");
@@ -134,9 +125,13 @@ namespace CaptureFloat
                 };
                 bit[i] = sc.Capture(rect, enmScreenCaptureMode.Screen);
             }
-            CaptureStart(bit);
+            return bit;
         }
 
+        /// <summary>
+        /// キャプチャー開始
+        /// </summary>
+        /// <param name="bit"></param>
         public void CaptureStart(System.Drawing.Bitmap[] bit = null)
         {
             this.Visibility = Visibility.Hidden;
@@ -185,6 +180,10 @@ namespace CaptureFloat
             }
         }
 
+        /// <summary>
+        /// FloatのTopmost設定
+        /// </summary>
+        /// <param name="visible"></param>
         public void FloatWindowTopMost(bool visible)
         {
             foreach (var fw in floatWindows.Values)
@@ -193,51 +192,34 @@ namespace CaptureFloat
             }
         }
 
-        private void DistanceBt_Click(object sender, RoutedEventArgs e)
-        {
-            this.Visibility = Visibility.Hidden;
-            FloatWindowTopMost(false);
-            Task.Run(() =>
-            {
-                Thread.Sleep(100);
-                this.Dispatcher.Invoke(() =>
-                {
-                    disWindows.Clear();
-                    foreach (var screen in ScreenManager.AllScreens())
-                    {
-                        var disWindow = new DistanceWindow(screen);
-                        disWindows.Add(disWindow);
-                        disWindow.Open();
-                    }
-                });
-            });
-        }
-
-        private void SaveOpenBt_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("EXPLORER.EXE", @"IMG");
-        }
-
         private void ExitBt_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-            //Environment.Exit(0);
         }
 
+        /// <summary>
+        /// ファイル開く押下
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuOpenBt_Click(object sender, RoutedEventArgs e)
         {
             ImageOpen();
         }
 
+        /// <summary>
+        /// ファイル開く
+        /// </summary>
         public void ImageOpen()
         {
             try
             {
-                var dialog = new OpenFileDialog();
-                dialog.Filter = "PNGファイル (*.png)|*.png|JPGファイル (*.jpg)|*.jpg";
-                //dialog.Filter = "PNGファイル (*.png)|*.png|JPGファイル (*.jpg)|*.jpg|すべて (*.*)|*.*";
-                dialog.Multiselect = false;
-                dialog.InitialDirectory = Common.ImgFolder;
+                var dialog = new OpenFileDialog
+                {
+                    Filter = "PNGファイル (*.png)|*.png|JPGファイル (*.jpg)|*.jpg",
+                    Multiselect = false,
+                    InitialDirectory = Common.ImgFolder
+                };
                 // ダイアログを表示する
                 if (dialog.ShowDialog() == true)
                 {

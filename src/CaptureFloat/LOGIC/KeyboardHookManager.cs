@@ -15,11 +15,6 @@ namespace CaptureFloat.LOGIC
 
         public void KeyboardHookListenerOnKeyDown(object sender, KeyEventArgs e)
         {
-            //if (e.KeyCode == Keys.PrintScreen)
-            //{
-            //    e.Handled = true;
-            //}
-
             if (e.KeyCode == Keys.LMenu || e.KeyCode == Keys.RMenu)
             {
                 KeyDownAlt();
@@ -28,30 +23,6 @@ namespace CaptureFloat.LOGIC
             {
                 altKeyFlg = false;
             }
-
-            //if (e.Alt && e.KeyCode == System.Windows.Forms.Keys.S)
-            //{
-            //    Console.WriteLine("Alt + S");
-            //    e.Handled = true;
-            //}
-
-            //if (altKeyFlg && !e.Control && !e.Shift)
-            //{
-            //    if (e.KeyCode == Keys.Oem3)
-            //    {
-            //        Common.Invoke(() => {
-            //            MainWindow.GetInstance().ImageOpen();
-            //        });ooo
-            //        e.Handled = true;
-            //    }
-            //    if (e.KeyCode == Keys.Oem1)
-            //    {
-            //        Common.SetAllWindowState(System.Windows.WindowState.Normal, "FloatWindow", "MainWindow");
-            //        e.Handled = true;
-            //    }
-            //}
-
-            //Debug.WriteLine(e.KeyData.ToString());
 
             if (e.KeyData.ToString() == "Oemtilde, Alt")
             {
@@ -134,12 +105,6 @@ namespace CaptureFloat.LOGIC
 
         public void KeyboardHookListenerOnKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            //if (e.Alt && e.KeyCode == Keys.S)
-            //{
-            //    Console.WriteLine("Alt + S");
-            //    e.Handled = true;
-            //}
-
             if (e.KeyCode == Keys.LMenu || e.KeyCode == Keys.RMenu)
             {
                 KeyUpAlt();

@@ -30,14 +30,11 @@ namespace CaptureFloat.VIEW
         double RectLeft = 0;
         double MouseX = 0;
         double MouseY = 0;
-        double RectWidth = 0;
-        double RectHeight = 0;
         bool IsRect = false;
         string distanceStr = null;
-
-        ScreenCapturer sc = new ScreenCapturer();
+        readonly ScreenCapturer sc = new ScreenCapturer();
         Bitmap bitmap = null;
-        ScreenManager screenManager = null;
+        readonly ScreenManager screenManager = null;
         Rect rect = new Rect();
 
         public DistanceWindow(ScreenManager sm)
@@ -83,13 +80,11 @@ namespace CaptureFloat.VIEW
             HorizontalRect.Margin = new Thickness(0, MouseY - 0.5, 0, rect.Height - MouseY - 0.5);
         }
 
-        private void overGd_MouseDown(object sender, MouseButtonEventArgs e)
+        private void OverGd_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var mousePos = e.GetPosition(overGd);
             RectLeft = mousePos.X;
             RectTop = mousePos.Y;
-            RectWidth = 0;
-            RectHeight = 0;
             IsRect = true;
             StartRect.Visibility = Visibility.Visible;
 
@@ -103,7 +98,7 @@ namespace CaptureFloat.VIEW
             RePaint();
         }
 
-        private void overGd_MouseUp(object sender, MouseButtonEventArgs e)
+        private void OverGd_MouseUp(object sender, MouseButtonEventArgs e)
         {
             IsRect = false;
             var mousePos = e.GetPosition(overGd);
@@ -128,7 +123,7 @@ namespace CaptureFloat.VIEW
             MainWindow.GetInstance().FloatWindowTopMost(true);
         }
 
-        private void overGd_MouseMove(object sender, MouseEventArgs e)
+        private void OverGd_MouseMove(object sender, MouseEventArgs e)
         {
             var mousePos = e.GetPosition(overGd);
             MouseX = mousePos.X;
@@ -186,13 +181,13 @@ namespace CaptureFloat.VIEW
             }
         }
 
-        private void overGd_MouseEnter(object sender, MouseEventArgs e)
+        private void OverGd_MouseEnter(object sender, MouseEventArgs e)
         {
             VerticalRect.Visibility = Visibility.Visible;
             HorizontalRect.Visibility = Visibility.Visible;
         }
 
-        private void overGd_MouseLeave(object sender, MouseEventArgs e)
+        private void OverGd_MouseLeave(object sender, MouseEventArgs e)
         {
             VerticalRect.Visibility = Visibility.Collapsed;
             HorizontalRect.Visibility = Visibility.Collapsed;

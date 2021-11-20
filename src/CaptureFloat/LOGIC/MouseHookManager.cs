@@ -17,7 +17,6 @@ namespace CaptureFloat
         public void Start()
         {
             mh = new MouseHook();
-            //mh.OnMouseMove = MouseHookListenerOnMouseMove;
             mh.OnMouseDown = MouseHookListenerOnMouseDown;
             mh.OnMouseUp = MouseHookListenerOnMouseUp;
             mh.Init();
@@ -27,11 +26,6 @@ namespace CaptureFloat
         {
             mh.Close();
         }
-
-        //public void MouseHookListenerOnMouseMove(object sender, MouseEventArgs e)
-        //{
-        //    Y = e.Y;
-        //}
 
         public void MouseHookListenerOnMouseDown(object sender, MouseEventArgs e)
         {

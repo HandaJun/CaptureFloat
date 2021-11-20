@@ -33,11 +33,5 @@
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
-        <Button x:Name="CaptureBt" Content="キャプチャー" HorizontalAlignment="Left" Margin="10,10,0,0" Width="80" Click="CaptureBt_Click" Height="49" VerticalAlignment="Top"/>
-        <Button x:Name="SaveOpenBt" Content="保存先開く" HorizontalAlignment="Left" Margin="103,10,0,0" Width="80" Click="SaveOpenBt_Click" Height="49" VerticalAlignment="Top"/>
-        <Button x:Name="DistanceBt" Content="距離" Margin="195,10,0,0" Click="DistanceBt_Click" HorizontalAlignment="Left" Width="81" Height="49" VerticalAlignment="Top"/>
-        <!--<Button x:Name="ImageOpenBt" Content="開く" HorizontalAlignment="Left" Margin="88,10,0,0" VerticalAlignment="Top" Width="70" Height="40"/>-->
-        <!--<Button x:Name="SettingBt" Content="設定" HorizontalAlignment="Left" Margin="167,10,0,0" VerticalAlignment="Top" Width="70" Height="40"/>-->
-
     </Grid>
 </Window>
