@@ -10,7 +10,7 @@
         WindowState="Normal" WindowStartupLocation="Manual" Left="0" Top="0" Cursor="Cross" KeyUp="Window_KeyUp" Loaded="Window_Loaded">
     <Grid Margin="0">
         <Image x:Name="BackgroundImg" Margin="0" Stretch="Fill" Cursor="Cross"></Image>
-        <Grid x:Name="overGd" Background="#01000000" MouseDown="overGd_MouseDown" MouseUp="overGd_MouseUp" MouseMove="overGd_MouseMove" MouseEnter="overGd_MouseEnter" MouseLeave="overGd_MouseLeave">
+        <Grid x:Name="overGd" Background="#01000000" MouseDown="OverGd_MouseDown" MouseUp="OverGd_MouseUp" MouseMove="OverGd_MouseMove" MouseEnter="OverGd_MouseEnter" MouseLeave="OverGd_MouseLeave">
             <Rectangle x:Name="SelectedRect" Stroke="Red" StrokeThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="0" Height="0" Margin="0,0,0,0"></Rectangle>
             <Rectangle x:Name="VerticalRect" Stroke="#FF00FF00" StrokeDashArray="2,5" StrokeDashCap="Round" SnapsToDevicePixels="True" StrokeThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="1" Height="1280" Margin="0,0,2000,0" IsHitTestVisible="False">
             </Rectangle>
