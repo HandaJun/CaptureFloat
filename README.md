@@ -1,6 +1,8 @@
 # CaptureFloat
 
-## 画面の一部をキャプチャし、常に表示するアプリ
+## 画面の一部をキャプチャし、常に表示するアプリ 
+
+### [Releases](https://github.com/HandaJun/CaptureFloat/releases)
 
 ### 特徴
 * いつでも簡単に起動可能 Alt + Alt
