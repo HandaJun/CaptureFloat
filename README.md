@@ -1,6 +1,6 @@
 # CaptureFloat
 
-## 画面の一部をキャプチャし、常に表示するアプリ 
+## 画面の一部をキャプチャーし、常に表示するアプリ 
 
 ### [Releases](https://github.com/HandaJun/CaptureFloat/releases)
 
@@ -23,4 +23,5 @@
 * フォルダまたはファイルにコメントを残したい場合、エクスプローラーでF8を押下します。
 
 ![Sample1](https://github.com/HandaJun/CaptureFloat/blob/main/sample/Sample1.png)
+![Sample2](https://github.com/HandaJun/CaptureFloat/blob/main/sample/Sample2.png)
 ![Sample3](https://github.com/HandaJun/CaptureFloat/blob/main/sample/Sample3.png)
